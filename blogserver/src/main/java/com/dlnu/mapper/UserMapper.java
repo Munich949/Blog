@@ -20,7 +20,15 @@ public interface UserMapper {
      * @param username 用户名。
      * @return 用户对象。
      */
-    User loadUserByUsername(@Param("username") String username);
+    User selectUserByUsername(@Param("username") String username);
+
+    /**
+     * 根据用户名加载用户信息。
+     *
+     * @param email 用户名。
+     * @return 用户对象。
+     */
+    User selectUserByEmail(@Param("email") String email);
 
     /**
      * 用户注册。
@@ -28,7 +36,7 @@ public interface UserMapper {
      * @param user 用户对象。
      * @return 受影响的行数。
      */
-    long reg(User user);
+    int register(User user);
 
     /**
      * 更新用户邮箱。
@@ -45,23 +53,16 @@ public interface UserMapper {
      * @param nickname 昵称。
      * @return 用户列表。
      */
-    List<User> getUserByNickname(@Param("nickname") String nickname);
-
-    /**
-     * 获取所有角色列表。
-     *
-     * @return 角色列表。
-     */
-    List<Role> getAllRole();
+    List<User> selectUserByNickname(@Param("nickname") String nickname);
 
     /**
      * 更新用户启用状态。
      *
-     * @param enabled 是否启用。
+     * @param status 是否启用。
      * @param uid     用户ID。
      * @return 受影响的行数。
      */
-    int updateUserEnabled(@Param("enabled") Boolean enabled, @Param("uid") Long uid);
+    int updateUserStatus(@Param("status") Boolean status, @Param("uid") Long uid);
 
     /**
      * 根据用户ID删除用户。
@@ -94,5 +95,5 @@ public interface UserMapper {
      * @param id 用户ID。
      * @return 用户对象。
      */
-    User getUserById(@Param("id") Long id);
+    User selectUserById(@Param("id") Long id);
 }

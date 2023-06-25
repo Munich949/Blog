@@ -25,7 +25,7 @@ public interface TagsMapper {
      * @param tags 标签数组。
      * @return 受影响的行数。
      */
-    int saveTags(@Param("tags") String[] tags);
+    int insertTags(@Param("tags") String[] tags);
 
     /**
      * 根据标签名称获取标签ID列表。
@@ -33,7 +33,7 @@ public interface TagsMapper {
      * @param tagNames 标签名称数组。
      * @return 标签ID列表。
      */
-    List<Long> getTagsIdByTagName(@Param("tagNames") String[] tagNames);
+    List<Long> selectTagsIdByTagName(@Param("tagNames") String[] tagNames);
 
     /**
      * 保存标签与文章的关联关系。
@@ -42,5 +42,5 @@ public interface TagsMapper {
      * @param aid    文章ID。
      * @return 受影响的行数。
      */
-    int saveTags2ArticleTags(@Param("tagIds") List<Long> tagIds, @Param("aid") Long aid);
+    int insertTags2ArticleTags(@Param("tagIds") List<Long> tagIds, @Param("aid") Long aid);
 }

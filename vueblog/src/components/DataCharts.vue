@@ -1,14 +1,13 @@
 <template>
-  <div
-    style="display: flex;height: 500px;width: 100%;align-items: center;justify-content: center;">
+  <div style="display: flex;height: 500px;width: 100%;align-items: center;justify-content: center;">
     <chart ref="dschart" :options="polar" style="margin-top: 20px"></chart>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
 <script>
-import ECharts from 'vue-echarts/components/ECharts.vue'
+// import ECharts from 'vue-echarts/components/ECharts.vue'
+import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/tooltip'
 
@@ -19,7 +18,7 @@ import 'echarts/lib/component/title'
 import 'echarts/theme/dark'
 import 'echarts/lib/chart/bar'
 
-import {getRequest} from '../utils/api'
+import { getRequest } from '../utils/api'
 
 export default {
   components: {
@@ -32,10 +31,10 @@ export default {
         _this.$refs.dschart.options.xAxis.data = resp.data.categories;
         _this.$refs.dschart.options.series[0].data = resp.data.ds;
       } else {
-        _this.$message({type: 'error', message: '数据加载失败!'});
+        _this.$message({ type: 'error', message: '数据加载失败!' });
       }
     }, resp => {
-      _this.$message({type: 'error', message: '数据加载失败!'});
+      _this.$message({ type: 'error', message: '数据加载失败!' });
     });
   },
   methods: {},

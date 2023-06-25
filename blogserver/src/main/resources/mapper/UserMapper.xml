@@ -3,78 +3,125 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlnu.mapper.UserMapper">
-    <select id="loadUserByUsername" resultType="com.dlnu.pojo.User">
-        SELECT *
+    <sql id="selectFields">
+        id, username, nickname, password, activation_code, status, email, userface, reg_time
+    </sql>
+    <!-- 根据用户名加载用户信息 -->
+    <select id="selectUserByUsername" resultType="User">
+        SELECT
+        <include refid="selectFields"/>
         FROM user
         WHERE username = #{username}
     </select>
-    <insert id="reg" useGeneratedKeys="true" keyProperty="id">
+
+    <!-- 根据邮箱加载用户信息 -->
+    <select id="selectUserByEmail" resultType="User">
+        SELECT
+        <include refid="selectFields"/>
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 用户注册 -->
+    <insert id="register" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO user
-        set username=#{username},
+        SET username=#{username},
+            nickname=#{nickname},
             password=#{password},
-            nickname=#{nickname}
+            email=#{email},
+            activation_code=#{activationCode},
+            status=#{status},
+            userface=#{userface},
+            reg_time=#{regTime}
     </insert>
+
+    <!-- 更新用户邮箱 -->
     <update id="updateUserEmail">
         UPDATE user
-        set email=#{email}
+        SET email=#{email}
         WHERE id = #{id}
     </update>
-    <select id="getUserByNickname" resultMap="BaseResultMap">
-        SELECT u.*,r.`id` AS rid,r.`name` AS rname FROM user u,roles r,roles_user ru WHERE u.`id`=ru.`uid` AND
-        r.`id`=ru.`rid` AND u.`id` NOT IN(SELECT u.`id` FROM user u,roles_user ru WHERE u.`id`=ru.`uid` AND ru.`rid`=1)
+
+    <!-- 根据昵称获取用户信息 -->
+    <select id="selectUserByNickname" resultMap="BaseResultMap">
+        SELECT u.*,
+               r.`id` AS rid,
+               r.`name` AS rname
+        FROM user u,roles r,roles_user ru
+        WHERE u.`id`=ru.`uid`
+        AND r.`id`=ru.`rid`
+        AND u.`id`
+        NOT IN (
+            SELECT u.`id`
+            FROM user u,roles_user ru
+            WHERE u.`id`=ru.`uid`
+            AND ru.`rid`=1
+        )
         <choose>
             <when test="nickname!=null and nickname!=''">
-                and u.nickname like concat('%',#{nickname},'%') ORDER BY u.`id`
+                AND u.nickname LIKE concat('%',#{nickname},'%') ORDER BY u.`id`
             </when>
             <otherwise>
-                ORDER BY u.`id` limit 20
+                ORDER BY u.`id` LIMIT 20
             </otherwise>
         </choose>
     </select>
-    <select id="getUserById" resultMap="BaseResultMap">
-        SELECT u.*, r.`id` AS rid, r.`name` AS rname
+
+    <!-- 根据用户ID获取用户信息 -->
+    <select id="selectUserById" resultMap="BaseResultMap">
+        SELECT u.*,
+               r.`id` AS rid,
+               r.`name` AS rname
         FROM user u,
              roles r,
              roles_user ru
         WHERE u.`id` = ru.`uid`
-          AND r.`id` = ru.`rid`
-          AND u.`id` = #{id}
+        AND r.`id` = ru.`rid`
+        AND u.`id` = #{id}
     </select>
-    <resultMap id="BaseResultMap" type="com.dlnu.pojo.User">
+
+    <!-- 用户信息的映射 -->
+    <resultMap id="BaseResultMap" type="User">
         <id column="id" property="id"/>
         <result column="username" property="username"/>
         <result column="nickname" property="nickname"/>
         <result column="password" property="password"/>
-        <result column="enabled" property="enabled"/>
+        <result column="activation_code" property="activationCode"/>
+        <result column="status" property="status"/>
         <result column="email" property="email"/>
         <result column="userface" property="userface"/>
-        <result column="regTime" property="regTime"/>
-        <collection property="roles" ofType="com.dlnu.pojo.Role">
+        <result column="reg_time" property="regTime"/>
+        <collection property="roles" ofType="Role">
             <id column="rid" property="id"/>
             <result column="rname" property="name"/>
         </collection>
     </resultMap>
-    <select id="getAllRole" resultType="com.dlnu.pojo.Role">
-        select *
-        from roles;
-    </select>
-    <update id="updateUserEnabled">
+
+    <!-- 更新用户启用状态 -->
+    <update id="updateUserStatus">
         UPDATE user
-        set enabled=#{enabled}
+        SET status=#{status}
         WHERE id = #{uid}
     </update>
+
+    <!-- 根据用户ID删除用户 -->
     <delete id="deleteUserById">
         DELETE
         FROM user
         WHERE id = #{id}
     </delete>
+
+    <!-- 根据用户ID删除用户角色关联 -->
     <delete id="deleteUserRolesByUid">
         DELETE
         FROM roles_user
         WHERE uid = #{id}
     </delete>
+
+    <!-- 设置用户角色关联 -->
     <insert id="setUserRoles">
-        INSERT INTO roles_user(rid,uid) VALUES
+        INSERT INTO roles_user(rid,uid)
+        VALUES
         <foreach collection="rids" separator="," item="rid">
             (#{rid},#{id})
         </foreach>

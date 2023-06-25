@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html th:xmlns="www.thymeleaf.org">
+<head>
+    <title>账号激活</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+        .activation-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<h1>账号激活</h1>
+<p th:text="${msg}">激活成功！</p>
+<p><a class="activation-link" th:href="${target}">点击跳转</a></p>
+</body>
+</html>

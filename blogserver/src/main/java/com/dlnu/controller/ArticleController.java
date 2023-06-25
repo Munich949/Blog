@@ -1,10 +1,10 @@
 package com.dlnu.controller;
 
+import com.dlnu.pojo.Article;
 import com.dlnu.pojo.RespBean;
 import com.dlnu.service.ArticleService;
-import org.apache.commons.io.IOUtils;
-import com.dlnu.pojo.Article;
 import com.dlnu.utils.Util;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +30,7 @@ public class ArticleController {
 
     /**
      * 添加新文章
+     *
      * @param article 文章对象
      * @return 响应实体类
      */
@@ -45,13 +46,14 @@ public class ArticleController {
 
     /**
      * 上传图片
-     * @param req HTTP请求对象
+     *
+     * @param req   HTTP请求对象
      * @param image 图片文件
      * @return 响应实体类
      */
     @RequestMapping(value = "/uploadimg", method = RequestMethod.POST)
     public RespBean uploadImg(HttpServletRequest req, MultipartFile image) {
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         String filePath = "/blogimg/" + sdf.format(new Date());
         String imgFolderPath = req.getServletContext().getRealPath(filePath);
         File imgFolder = new File(imgFolderPath);
@@ -78,16 +80,17 @@ public class ArticleController {
 
     /**
      * 根据文章状态获取文章列表
-     * @param state 文章状态
-     * @param page 分页页码
-     * @param count 每页文章数量
+     *
+     * @param state    文章状态
+     * @param page     分页页码
+     * @param count    每页文章数量
      * @param keywords 关键词
      * @return 包含文章列表和总数的Map
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public Map<String, Object> getArticleByState(@RequestParam(value = "state", defaultValue = "-1") Integer state, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "count", defaultValue = "6") Integer count,String keywords) {
-        int totalCount = articleService.getArticleCountByState(state, Util.getCurrentUser().getId(),keywords);
-        List<Article> articles = articleService.getArticleByState(state, page, count,keywords);
+    public Map<String, Object> getArticleByState(@RequestParam(value = "state", defaultValue = "-1") Integer state, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "count", defaultValue = "6") Integer count, String keywords) {
+        int totalCount = articleService.getArticleCountByState(state, Util.getCurrentUser().getId(), keywords);
+        List<Article> articles = articleService.getArticleByState(state, page, count, keywords);
         Map<String, Object> map = new HashMap<>();
         map.put("totalCount", totalCount);
         map.put("articles", articles);
@@ -96,6 +99,7 @@ public class ArticleController {
 
     /**
      * 根据文章ID获取文章信息
+     *
      * @param aid 文章ID
      * @return 文章对象
      */
@@ -106,7 +110,8 @@ public class ArticleController {
 
     /**
      * 更新文章状态为回收站
-     * @param aids 文章ID数组
+     *
+     * @param aids  文章ID数组
      * @param state 文章状态
      * @return 响应实体类
      */
@@ -120,6 +125,7 @@ public class ArticleController {
 
     /**
      * 还原文章状态
+     *
      * @param articleId 文章ID
      * @return 响应实体类
      */
@@ -133,10 +139,11 @@ public class ArticleController {
 
     /**
      * 获取数据统计信息
+     *
      * @return 包含分类和数据统计的Map
      */
     @RequestMapping("/dataStatistics")
-    public Map<String,Object> dataStatistics() {
+    public Map<String, Object> dataStatistics() {
         Map<String, Object> map = new HashMap<>();
         List<String> categories = articleService.getCategories();
         List<Integer> dataStatistics = articleService.getDataStatistics();

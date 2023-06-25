@@ -25,6 +25,7 @@ public class UserManaController {
 
     /**
      * 根据昵称获取用户列表
+     *
      * @param nickname 用户昵称
      * @return 用户列表
      */
@@ -35,6 +36,7 @@ public class UserManaController {
 
     /**
      * 根据用户ID获取用户信息
+     *
      * @param id 用户ID
      * @return 用户信息
      */
@@ -45,6 +47,7 @@ public class UserManaController {
 
     /**
      * 获取所有角色列表
+     *
      * @return 角色列表
      */
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
@@ -54,13 +57,14 @@ public class UserManaController {
 
     /**
      * 更新用户启用状态
-     * @param enabled 是否启用
-     * @param uid 用户ID
+     *
+     * @param status 是否启用
+     * @param uid     用户ID
      * @return 响应实体类
      */
-    @RequestMapping(value = "/user/enabled", method = RequestMethod.PUT)
-    public RespBean updateUserEnabled(Boolean enabled, Long uid) {
-        if (userService.updateUserEnabled(enabled, uid) == 1) {
+    @RequestMapping(value = "/user/status", method = RequestMethod.PUT)
+    public RespBean updateUserStatus(Boolean status, Long uid) {
+        if (userService.updateUserStatus(status, uid) == 1) {
             return new RespBean("success", "更新成功!");
         } else {
             return new RespBean("error", "更新失败!");
@@ -69,6 +73,7 @@ public class UserManaController {
 
     /**
      * 根据用户ID删除用户
+     *
      * @param uid 用户ID
      * @return 响应实体类
      */
@@ -83,8 +88,9 @@ public class UserManaController {
 
     /**
      * 更新用户角色
+     *
      * @param rids 角色ID数组
-     * @param id 用户ID
+     * @param id   用户ID
      * @return 响应实体类
      */
     @RequestMapping(value = "/user/role", method = RequestMethod.PUT)

@@ -24,8 +24,9 @@ public class AdminController {
 
     /**
      * 根据管理员获取文章列表
-     * @param page 分页页码
-     * @param count 每页文章数量
+     *
+     * @param page     分页页码
+     * @param count    每页文章数量
      * @param keywords 关键词
      * @return 包含文章列表和总数的Map
      */
@@ -40,7 +41,8 @@ public class AdminController {
 
     /**
      * 更新文章状态为回收站
-     * @param aids 文章ID数组
+     *
+     * @param aids  文章ID数组
      * @param state 文章状态
      * @return 响应实体类
      */

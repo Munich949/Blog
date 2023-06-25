@@ -20,7 +20,7 @@ public class DateTypeHandler implements TypeHandler<String> {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public void setParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
+    public void setParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) {
         // 设置 PreparedStatement 的参数
     }
 

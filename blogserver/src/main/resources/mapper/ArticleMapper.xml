@@ -3,26 +3,36 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dlnu.mapper.ArticleMapper">
-    <insert id="addNewArticle" parameterType="com.dlnu.pojo.Article" useGeneratedKeys="true" keyProperty="id">
+    <!-- 插入文章 -->
+    <insert id="insertNewArticle" parameterType="Article" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO article
         SET title=#{title},
-            mdContent=#{mdContent},
-            htmlContent=#{htmlContent},
-            summary=#{summary},
-            cid=#{cid},
-            uid=#{uid},
-            publishDate=#{publishDate},
-            state=#{state},
-            editTime=#{editTime}
+        mdContent=#{mdContent},
+        htmlContent=#{htmlContent},
+        summary=#{summary},
+        cid=#{cid},
+        uid=#{uid},
+        publishDate=#{publishDate},
+        state=#{state},
+        editTime=#{editTime}
     </insert>
+
+    <!-- 增加文章的浏览量 -->
     <update id="pvIncrement" parameterType="Long">
         UPDATE article
-        set pageView=pageView + 1
+        SET pageView=pageView + 1
         WHERE id = #{aid}
     </update>
-    <update id="updateArticle" parameterType="com.dlnu.pojo.Article">
-        UPDATE article SET
-        title=#{title},mdContent=#{mdContent},htmlContent=#{htmlContent},summary=#{summary},cid=#{cid},editTime=#{editTime}
+
+    <!-- 更新文章 -->
+    <update id="updateArticle" parameterType="Article">
+        UPDATE article
+        SET title=#{title},
+        mdContent=#{mdContent},
+        htmlContent=#{htmlContent},
+        summary=#{summary},
+        cid=#{cid},
+        editTime=#{editTime}
         <if test="state==1">
             ,state=1
         </if>
@@ -31,33 +41,48 @@
         </if>
         WHERE id=#{id}
     </update>
-    <select id="getArticleByState" resultType="com.dlnu.pojo.Article">
-        SELECT a.id,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.uid FROM article a,user
-        u,category c WHERE a.`cid`=c.`id` AND a.`uid`=u.`id`
+
+    <!-- 根据文章状态获取文章列表 -->
+    <select id="selectArticleByState" resultType="Article">
+        SELECT a.`id`,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.`uid`
+        FROM article a,user u,category c
+        WHERE a.`cid`=c.`id` AND a.`uid`=u.`id`
         <if test="state!=-2">
-            and a.uid=#{uid}
+            AND a.`uid`=#{uid}
         </if>
         <if test="state!=-1 and state!=-2">
-            and a.state=#{state}
+            AND a.`state`=#{state}
         </if>
         <if test="state==-2">
-            and a.state=1
+            AND a.`state`=1
         </if>
         <if test="keywords!=null">
             AND title LIKE concat('%',#{keywords},'%')
         </if>
-        ORDER BY a.editTime DESC limit #{start},#{count};
+        ORDER BY a.editTime
+        DESC
+        LIMIT #{start},#{count};
     </select>
-    <select id="getArticleByStateByAdmin" resultType="com.dlnu.pojo.Article">
-        SELECT a.id,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.uid FROM article a,user
-        u,category c WHERE a.`cid`=c.`id` AND a.`uid`=u.`id` and a.state=1
+
+    <!-- 根据文章状态获取管理员文章列表 -->
+    <select id="selectArticleByStateByAdmin" resultType="Article">
+        SELECT a.`id`,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.`uid`
+        FROM article a,user u,category c
+        WHERE a.`cid`=c.`id`
+        AND a.`uid`=u.`id`
+        AND a.state=1
         <if test="keywords!=null">
             AND title LIKE concat('%',#{keywords},'%')
         </if>
-        ORDER BY a.editTime DESC limit #{start},#{count};
+        ORDER BY a.editTime
+        DESC
+        LIMIT #{start},#{count};
     </select>
-    <select id="getArticleCountByState" resultType="int">
-        SELECT count(*) FROM article
+
+    <!-- 根据文章状态获取文章数量 -->
+    <select id="selectArticleCountByState" resultType="int">
+        SELECT count(*)
+        FROM article
         <where>
             <if test="state!=-1">
                 AND state=#{state}
@@ -70,34 +95,49 @@
             </if>
         </where>
     </select>
+
+    <!-- 更新文章状态 -->
     <update id="updateArticleState">
-        UPDATE article SET state=#{state} WHERE id IN
+        UPDATE article
+        SET state=#{state}
+        WHERE id
+        IN
         <foreach collection="aids" item="aid" separator="," open="(" close=")">
             #{aid}
         </foreach>
     </update>
+
+    <!-- 根据文章 ID 更新文章状态 -->
     <update id="updateArticleStateById">
         UPDATE article
         SET state=#{state}
         WHERE id = #{articleId}
     </update>
+
+    <!-- 根据文章 ID 删除文章 -->
     <delete id="deleteArticleById">
-        DELETE FROM article WHERE id IN
+        DELETE
+        FROM article
+        WHERE id
+        IN
         <foreach collection="aids" item="aid" open="(" close=")" separator=",">
             #{aid}
         </foreach>
     </delete>
-    <select id="getArticleById" parameterType="Long" resultMap="BaseResultMap">
+
+    <!-- 根据文章 ID 获取文章详情 -->
+    <select id="selectArticleById" parameterType="Long" resultMap="BaseResultMap">
         SELECT a.*, t.`tagName`, t.`id` AS tid, u.`nickname`, c.`cateName`
         FROM article a
-                 LEFT JOIN article_tags ats ON a.`id` = ats.`aid`
-                 LEFT JOIN tags t ON ats.`tid` = t.`id`
-                 LEFT JOIN user u ON a.`uid` = u.`id`
-                 LEFT JOIN category c ON a.`cid` = c.`id`
+        LEFT JOIN article_tags ats ON a.`id` = ats.`aid`
+        LEFT JOIN tags t ON ats.`tid` = t.`id`
+        LEFT JOIN user u ON a.`uid` = u.`id`
+        LEFT JOIN category c ON a.`cid` = c.`id`
         WHERE a.id = #{aid}
     </select>
 
-    <resultMap id="BaseResultMap" type="com.dlnu.pojo.Article">
+    <!-- 定义结果映射 -->
+    <resultMap id="BaseResultMap" type="Article">
         <id column="id" property="id"/>
         <result column="title" property="title"/>
         <result column="cid" property="cid"/>
@@ -111,12 +151,13 @@
         <result column="summary" property="summary"/>
         <result column="nickname" property="nickname"/>
         <result column="cateName" property="cateName"/>
-        <collection property="tags" ofType="com.dlnu.pojo.Tags" column="tagName">
+        <collection property="tags" ofType="Tags" column="tagName">
             <id property="id" column="tid"/>
             <result property="tagName" column="tagName"/>
         </collection>
     </resultMap>
 
+    <!-- 插入每日 PV 统计数据 -->
     <insert id="pvStatisticsPerDay">
         INSERT INTO pv(countDate, pv, uid)
         SELECT CURRENT_DATE(), totalPv - pv, t.`uid`
@@ -125,18 +166,20 @@
         WHERE p.`uid` = t.`uid`
     </insert>
 
-    <select id="getCategories" resultType="String" parameterType="long">
+    <!-- 获取用户的 PV 统计数据 -->
+    <select id="selectCategories" resultType="String" parameterType="long">
         SELECT countDate
-        from pv
+        FROM pv
         WHERE uid = #{uid}
-        ORDER by countDate
-        limit 7
+        ORDER BY countDate
+        LIMIT 7
     </select>
-    <select parameterType="long" id="getDataStatistics" resultType="int">
+
+    <select id="selectDataStatistics" parameterType="long" resultType="int">
         SELECT pv
-        from pv
+        FROM pv
         WHERE uid = #{uid}
-        ORDER by countDate
-        limit 7
+        ORDER BY countDate
+        LIMIT 7
     </select>
 </mapper>

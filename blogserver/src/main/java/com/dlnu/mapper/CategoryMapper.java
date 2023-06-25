@@ -1,8 +1,8 @@
 package com.dlnu.mapper;
 
+import com.dlnu.pojo.Category;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.dlnu.pojo.Category;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface CategoryMapper {
      *
      * @return 所有分类的列表。
      */
-    List<Category> getAllCategories();
+    List<Category> selectAllCategories();
 
     /**
      * 根据分类的 ID 删除分类。
@@ -41,5 +41,5 @@ public interface CategoryMapper {
      * @param category 要添加的分类对象。
      * @return 受影响的行数。
      */
-    int addCategory(Category category);
+    int insertCategory(Category category);
 }

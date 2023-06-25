@@ -32,8 +32,8 @@ public class ArticleService {
         // 处理文章摘要
         if (article.getSummary() == null || "".equals(article.getSummary())) {
             // 直接截取
-            String stripHtml = stripHtml(article.getHtmlContent());
-            article.setSummary(stripHtml.substring(0, stripHtml.length() > 50 ? 50 : stripHtml.length()));
+            String stripHtml = Util.stripHtml(article.getHtmlContent());
+            article.setSummary(stripHtml.substring(0, Math.min(stripHtml.length(), 50)));
         }
         if (article.getId() == -1) {
             // 添加操作
@@ -45,7 +45,7 @@ public class ArticleService {
             article.setEditTime(timestamp);
             // 设置当前用户
             article.setUid(Util.getCurrentUser().getId());
-            int i = articleMapper.addNewArticle(article);
+            int i = articleMapper.insertNewArticle(article);
             // 打标签
             String[] dynamicTags = article.getDynamicTags();
             if (dynamicTags != null && dynamicTags.length > 0) {
@@ -87,25 +87,12 @@ public class ArticleService {
         // 1. 删除该文章目前所有的标签
         tagsMapper.deleteTagsByAid(aid);
         // 2. 将上传上来的标签全部存入数据库
-        tagsMapper.saveTags(dynamicTags);
+        tagsMapper.insertTags(dynamicTags);
         // 3. 查询这些标签的id
-        List<Long> tIds = tagsMapper.getTagsIdByTagName(dynamicTags);
+        List<Long> tIds = tagsMapper.selectTagsIdByTagName(dynamicTags);
         // 4. 重新给文章设置标签
-        int i = tagsMapper.saveTags2ArticleTags(tIds, aid);
+        int i = tagsMapper.insertTags2ArticleTags(tIds, aid);
         return i == dynamicTags.length ? i : -1;
-    }
-
-    /**
-     * 去除文章内容中的 HTML 标签，返回纯文本内容
-     *
-     * @param content 文章内容
-     * @return 去除 HTML 标签后的纯文本内容
-     */
-    public String stripHtml(String content) {
-        content = content.replaceAll("<p .*?>", "");
-        content = content.replaceAll("<br\\s*/?>", "");
-        content = content.replaceAll("\\<.*?>", "");
-        return content;
     }
 
     /**
@@ -120,7 +107,7 @@ public class ArticleService {
     public List<Article> getArticleByState(Integer state, Integer page, Integer count, String keywords) {
         int start = (page - 1) * count;
         Long uid = Util.getCurrentUser().getId();
-        return articleMapper.getArticleByState(state, start, count, uid, keywords);
+        return articleMapper.selectArticleByState(state, start, count, uid, keywords);
     }
 
     /**
@@ -132,7 +119,7 @@ public class ArticleService {
      * @return 符合条件的文章数量
      */
     public int getArticleCountByState(Integer state, Long uid, String keywords) {
-        return articleMapper.getArticleCountByState(state, uid, keywords);
+        return articleMapper.selectArticleCountByState(state, uid, keywords);
     }
 
     /**
@@ -167,7 +154,7 @@ public class ArticleService {
      * @return 文章对象
      */
     public Article getArticleById(Long aid) {
-        Article article = articleMapper.getArticleById(aid);
+        Article article = articleMapper.selectArticleById(aid);
         articleMapper.pvIncrement(aid); // 文章的浏览量加1
         return article;
     }
@@ -185,7 +172,7 @@ public class ArticleService {
      * @return 日期列表
      */
     public List<String> getCategories() {
-        return articleMapper.getCategories(Util.getCurrentUser().getId());
+        return articleMapper.selectCategories(Util.getCurrentUser().getId());
     }
 
     /**
@@ -194,6 +181,6 @@ public class ArticleService {
      * @return 数据统计列表
      */
     public List<Integer> getDataStatistics() {
-        return articleMapper.getDataStatistics(Util.getCurrentUser().getId());
+        return articleMapper.selectDataStatistics(Util.getCurrentUser().getId());
     }
 }

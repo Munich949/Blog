@@ -19,7 +19,14 @@ public interface RolesMapper {
      * @param uid   用户ID。
      * @return 添加的角色数量。
      */
-    int addRoles(@Param("roles") String[] roles, @Param("uid") Long uid);
+    int insertRoles(@Param("roles") String[] roles, @Param("uid") Long uid);
+
+    /**
+     * 获取所有角色列表。
+     *
+     * @return 角色列表。
+     */
+    List<Role> selectAllRole();
 
     /**
      * 根据用户ID获取角色列表。
@@ -27,5 +34,5 @@ public interface RolesMapper {
      * @param uid 用户ID。
      * @return 与用户关联的角色列表。
      */
-    List<Role> getRolesByUid(Long uid);
+    List<Role> selectRolesByUid(Long uid);
 }

@@ -24,7 +24,7 @@ public class CategoryService {
      * @return 所有分类的列表
      */
     public List<Category> getAllCategories() {
-        return categoryMapper.getAllCategories();
+        return categoryMapper.selectAllCategories();
     }
 
     /**
@@ -57,6 +57,6 @@ public class CategoryService {
      */
     public int addCategory(Category category) {
         category.setDate(new Timestamp(System.currentTimeMillis()));
-        return categoryMapper.addCategory(category);
+        return categoryMapper.insertCategory(category);
     }
 }

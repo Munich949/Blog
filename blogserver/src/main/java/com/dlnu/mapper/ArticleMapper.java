@@ -18,7 +18,7 @@ public interface ArticleMapper {
      * @param article 要插入的文章对象。
      * @return 受影响的行数。
      */
-    int addNewArticle(Article article);
+    int insertNewArticle(Article article);
 
     /**
      * 更新数据库中的一篇文章。
@@ -38,7 +38,7 @@ public interface ArticleMapper {
      * @param keywords 关键词。
      * @return 符合指定条件的文章列表。
      */
-    List<Article> getArticleByState(@Param("state") Integer state, @Param("start") Integer start, @Param("count") Integer count, @Param("uid") Long uid, @Param("keywords") String keywords);
+    List<Article> selectArticleByState(@Param("state") Integer state, @Param("start") Integer start, @Param("count") Integer count, @Param("uid") Long uid, @Param("keywords") String keywords);
 
     /**
      * 根据状态、用户ID和关键词统计文章数量。
@@ -48,7 +48,7 @@ public interface ArticleMapper {
      * @param keywords 关键词。
      * @return 符合指定条件的文章数量。
      */
-    int getArticleCountByState(@Param("state") Integer state, @Param("uid") Long uid, @Param("keywords") String keywords);
+    int selectArticleCountByState(@Param("state") Integer state, @Param("uid") Long uid, @Param("keywords") String keywords);
 
     /**
      * 更新多篇文章的状态。
@@ -57,7 +57,7 @@ public interface ArticleMapper {
      * @param state 新的状态。
      * @return 受影响的行数。
      */
-    int updateArticleState(@Param("aids") Long aids[], @Param("state") Integer state);
+    int updateArticleState(@Param("aids") Long[] aids, @Param("state") Integer state);
 
     /**
      * 根据文章ID更新文章的状态。
@@ -82,7 +82,7 @@ public interface ArticleMapper {
      * @param aid 文章ID。
      * @return 符合指定ID的文章对象。
      */
-    Article getArticleById(Long aid);
+    Article selectArticleById(Long aid);
 
     /**
      * 文章的浏览量加1。
@@ -102,7 +102,7 @@ public interface ArticleMapper {
      * @param uid 用户ID。
      * @return 分类列表。
      */
-    List<String> getCategories(Long uid);
+    List<String> selectCategories(Long uid);
 
     /**
      * 根据用户ID获取数据统计。
@@ -110,5 +110,5 @@ public interface ArticleMapper {
      * @param uid 用户ID。
      * @return 数据统计列表。
      */
-    List<Integer> getDataStatistics(Long uid);
+    List<Integer> selectDataStatistics(Long uid);
 }

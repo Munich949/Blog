@@ -26,7 +26,7 @@ export default {
       },
       checked: true,
       loginForm: {
-        username: 'sang',
+        username: 'Munich',
         password: '123'
       },
       loading: false
@@ -41,10 +41,10 @@ export default {
         password: this.loginForm.password
       }).then(resp => {
         _this.loading = false;
-        if (resp.status == 200) {
+        if (resp.status === 200) {
           //成功
           var json = resp.data;
-          if (json.status == 'success') {
+          if (json.status === 'success') {
             _this.$router.replace({path: '/home'});
           } else {
             _this.$alert('登录失败!', '失败!');

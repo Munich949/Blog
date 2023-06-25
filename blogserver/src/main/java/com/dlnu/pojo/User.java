@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +23,13 @@ public class User implements UserDetails {
     private Long id; // 用户ID
     private String username; // 用户名
     private String password; // 密码
+    private String activationCode; // 激活码
     private String nickname; // 昵称
-    private boolean enabled; // 是否启用
+    private Boolean status; // 是否激活
     private List<Role> roles; // 用户角色列表
     private String email; // 邮箱
     private String userface; // 用户头像
-    private Timestamp regTime; // 注册时间
+    private LocalDateTime regTime; // 注册时间
 
     @Override
     public boolean isAccountNonExpired() {
@@ -47,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return this.status;
     }
 
     @Override

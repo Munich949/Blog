@@ -1,7 +1,7 @@
 package com.dlnu.controller;
 
-import com.dlnu.pojo.RespBean;
 import com.dlnu.pojo.Category;
+import com.dlnu.pojo.RespBean;
 import com.dlnu.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +26,7 @@ public class CategoryController {
 
     /**
      * 获取所有分类列表
+     *
      * @return 分类列表
      */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
@@ -35,6 +36,7 @@ public class CategoryController {
 
     /**
      * 根据分类ID删除分类
+     *
      * @param ids 分类ID
      * @return 响应实体类
      */
@@ -49,6 +51,7 @@ public class CategoryController {
 
     /**
      * 添加新分类
+     *
      * @param category 分类对象
      * @return 响应实体类
      */
@@ -68,6 +71,7 @@ public class CategoryController {
 
     /**
      * 更新分类
+     *
      * @param category 分类对象
      * @return 响应实体类
      */

@@ -14,7 +14,8 @@ import java.util.List;
 /**
  * 这是一个用户控制器类，
  * 包含了获取当前用户的昵称、ID、邮箱等信息的请求处理方法，
- * 以及判断当前用户是否为超级管理员的方法。还包括更新用户邮箱的方法
+ * 以及判断当前用户是否为超级管理员的方法。
+ * 还包括更新用户邮箱的方法
  */
 @RestController
 public class UserController {
@@ -24,6 +25,7 @@ public class UserController {
 
     /**
      * 获取当前用户的昵称
+     *
      * @return 当前用户的昵称
      */
     @RequestMapping("/currentUserName")
@@ -33,6 +35,7 @@ public class UserController {
 
     /**
      * 获取当前用户的ID
+     *
      * @return 当前用户的ID
      */
     @RequestMapping("/currentUserId")
@@ -42,6 +45,7 @@ public class UserController {
 
     /**
      * 获取当前用户的邮箱
+     *
      * @return 当前用户的邮箱
      */
     @RequestMapping("/currentUserEmail")
@@ -51,6 +55,7 @@ public class UserController {
 
     /**
      * 判断当前用户是否为超级管理员
+     *
      * @return 如果当前用户是超级管理员，则返回true；否则返回false
      */
     @RequestMapping("/isAdmin")
@@ -66,10 +71,11 @@ public class UserController {
 
     /**
      * 更新用户邮箱
+     *
      * @param email 新的邮箱
      * @return 响应实体类
      */
-    @RequestMapping(value = "/updateUserEmail",method = RequestMethod.PUT)
+    @RequestMapping(value = "/updateUserEmail", method = RequestMethod.PUT)
     public RespBean updateUserEmail(String email) {
         if (userService.updateUserEmail(email) == 1) {
             return new RespBean("success", "开启成功!");
