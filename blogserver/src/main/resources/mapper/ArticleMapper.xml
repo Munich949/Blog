@@ -47,15 +47,19 @@
         SELECT a.`id`,a.`title`,a.`editTime`,a.`pageView`,a.`state`,u.`nickname`,c.`cateName`,a.`uid`
         FROM article a,user u,category c
         WHERE a.`cid`=c.`id` AND a.`uid`=u.`id`
+        # 不是"博客管理"模块 不用查询全部文章 只查询当前登录的用户的文章即可
         <if test="state!=-2">
             AND a.`uid`=#{uid}
         </if>
+        # 不是"全部文章"模块 查询已发表 草稿箱或已删除的文章
         <if test="state!=-1 and state!=-2">
             AND a.`state`=#{state}
         </if>
+        # "博客管理"模块 只查询已发表的文章
         <if test="state==-2">
             AND a.`state`=1
         </if>
+        # 如果查询了关键字 则模糊搜索
         <if test="keywords!=null">
             AND title LIKE concat('%',#{keywords},'%')
         </if>

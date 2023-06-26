@@ -8,10 +8,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 
 /**
@@ -25,6 +26,9 @@ import java.io.PrintWriter;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserService userService;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -57,6 +61,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 .exceptionHandling()
                 .accessDeniedHandler(getAccessDeniedHandler());
+        http.rememberMe()
+                .tokenRepository(persistentTokenRepository())	//持久
+                .tokenValiditySeconds(7 * 24 * 60 * 60)	//过期时间
+                .userDetailsService(userService); //用来加载用户认证信息的
     }
 
     @Override
@@ -67,5 +75,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     AccessDeniedHandler getAccessDeniedHandler() {
         return new AuthenticationAccessDeniedHandler();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        jdbcTokenRepository.setCreateTableOnStartup(false);
+        return jdbcTokenRepository;
     }
 }
