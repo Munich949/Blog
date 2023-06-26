@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 
 /**
  * 这是一个Web安全配置类，继承自WebSecurityConfigurerAdapter。
- * 它配置了Spring Security的认证、授权、登录、注销等相关功能。
+ * 它配置了Spring Security的认证、授权、登录、记住我、注销等相关功能。
  * 其中，configure(HttpSecurity http)方法配置了不同路径的访问权限，
  * configure(WebSecurity web)方法配置了忽略安全验证的路径，
  * getAccessDeniedHandler()方法返回了自定义的访问拒绝处理器。
