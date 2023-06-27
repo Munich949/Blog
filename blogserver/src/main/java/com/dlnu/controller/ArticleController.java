@@ -6,6 +6,7 @@ import com.dlnu.service.ArticleService;
 import com.dlnu.utils.Util;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,11 @@ import java.util.*;
 @RequestMapping("/article")
 public class ArticleController {
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    @Value("${blog.path.imagesFolder}")
+    String baseFolderPath;
+
+    @Value("${blog.path.urlMapper}")
+    String urlMapper;
 
     @Autowired
     ArticleService articleService;
@@ -47,30 +52,34 @@ public class ArticleController {
     /**
      * 上传图片
      *
-     * @param req   HTTP请求对象
+     * @param request   HTTP请求对象
      * @param image 图片文件
      * @return 响应实体类
      */
     @RequestMapping(value = "/uploadimg", method = RequestMethod.POST)
-    public RespBean uploadImg(HttpServletRequest req, MultipartFile image) {
-        StringBuilder url = new StringBuilder();
-        String filePath = "/blogimg/" + sdf.format(new Date());
-        String imgFolderPath = req.getServletContext().getRealPath(filePath);
-        File imgFolder = new File(imgFolderPath);
-        if (!imgFolder.exists()) {
-            imgFolder.mkdirs();
+    public RespBean uploadImg(HttpServletRequest request, MultipartFile image) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String filePath = sdf.format(new Date());
+
+        File baseFolder = new File(baseFolderPath + filePath);
+        if (!baseFolder.exists()) {
+            baseFolder.mkdirs();
         }
-        url.append(req.getScheme())
+
+        StringBuilder url = new StringBuilder();
+        url.append(request.getScheme())
                 .append("://")
-                .append(req.getServerName())
+                .append(request.getServerName())
                 .append(":")
-                .append(req.getServerPort())
-                .append(req.getContextPath())
+                .append(request.getServerPort())
+                .append(request.getContextPath())
+                .append(urlMapper)
                 .append(filePath);
         String imgName = UUID.randomUUID() + "_" + image.getOriginalFilename().replaceAll(" ", "");
         try {
-            IOUtils.write(image.getBytes(), new FileOutputStream(new File(imgFolder, imgName)));
+            IOUtils.write(image.getBytes(), new FileOutputStream(new File(baseFolder, imgName)));
             url.append("/").append(imgName);
+            System.out.println("url: " + url);
             return new RespBean("success", url.toString());
         } catch (IOException e) {
             e.printStackTrace();
