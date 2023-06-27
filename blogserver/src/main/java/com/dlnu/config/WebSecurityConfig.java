@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/index").permitAll()
                 .antMatchers("/blogimg/**").permitAll()
                 .antMatchers("/register").permitAll()   // 注册可以不用登录就能访问
                 .antMatchers("/activation/**").permitAll()
