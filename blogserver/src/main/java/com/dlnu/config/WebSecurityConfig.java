@@ -63,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .accessDeniedHandler(getAccessDeniedHandler());
         http.rememberMe()
-                .tokenRepository(persistentTokenRepository())	//持久
-                .tokenValiditySeconds(7 * 24 * 60 * 60)	//过期时间
+                .tokenRepository(persistentTokenRepository())    //持久
+                .tokenValiditySeconds(7 * 24 * 60 * 60)    //过期时间
                 .userDetailsService(userService); //用来加载用户认证信息的
     }
 

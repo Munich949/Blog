@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql:///blog
+    username: root
+    password: root
+
+  mail:
+    host: smtp.qq.com
+    username: 2493929776@qq.com
+    password: oikadxbhwbjmeadj
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    protocol: smtps
+
+mybatis:
+  config-location: classpath:/mybatis-config.xml
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.dlnu.pojo
+
+server:
+  port: 8081
+logging:
+  level:
+    org.springframework.security: info
+
+blog:
+  path:
+    domain: localhost:8081
+    imagesFolder: F:/Blogimages/
+    urlMapper: /blogimg/

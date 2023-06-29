@@ -52,8 +52,8 @@ public class ArticleController {
     /**
      * 上传图片
      *
-     * @param request   HTTP请求对象
-     * @param image 图片文件
+     * @param request HTTP请求对象
+     * @param image   图片文件
      * @return 响应实体类
      */
     @RequestMapping(value = "/uploadimg", method = RequestMethod.POST)

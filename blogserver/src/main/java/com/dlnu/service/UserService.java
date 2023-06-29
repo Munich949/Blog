@@ -70,39 +70,39 @@ public class UserService implements UserDetailsService {
      * @param user 用户对象。
      * @return 注册结果：0表示成功，1表示用户名重复，2表示邮箱重复，3表示失败。
      */
-    public int register(User user) {
-        User user1 = userMapper.selectUserByUsername(user.getUsername());
-        if (user1 != null) {
-            return 1;
-        }
-        User user2 = userMapper.selectUserByEmail(user.getEmail());
-        if (user2 != null) {
-            return 2;
-        }
-        // 插入用户,插入之前先对密码进行加密
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        // 用户先默认不可用 需要激活
-        user.setStatus(false);
-        // 生成激活码
-        user.setActivationCode(Util.generateUUID());
-        // 分配随机头像
-        user.setUserface(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
-        user.setRegTime(LocalDateTime.now());
-        int result = userMapper.register(user);
-        // 配置用户的角色，默认都是普通用户
-        String[] roles = new String[]{"2"};
-        int i = rolesMapper.insertRoles(roles, user.getId());
-        // 向用户填写的邮箱发一个用于激活账号的邮件
-        // 拼接用于激活的url
-        String url = domain + "/activation/" + user.getId() + "/" + user.getActivationCode();
-        mailClient.sendMail(user.getEmail(), "激活账号", url);
-        boolean b = i == roles.length && result == 1;
-        if (b) {
-            return 0;
-        } else {
-            return 3;
-        }
+public int register(User user) {
+    User user1 = userMapper.selectUserByUsername(user.getUsername());
+    if (user1 != null) {
+        return 1;
     }
+    User user2 = userMapper.selectUserByEmail(user.getEmail());
+    if (user2 != null) {
+        return 2;
+    }
+    // 插入用户,插入之前先对密码进行加密
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    // 用户先默认不可用 需要激活
+    user.setStatus(false);
+    // 生成激活码
+    user.setActivationCode(Util.generateUUID());
+    // 分配随机头像
+    user.setUserface(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
+    user.setRegTime(LocalDateTime.now());
+    int result = userMapper.register(user);
+    // 配置用户的角色，默认都是普通用户
+    String[] roles = new String[]{"2"};
+    int i = rolesMapper.insertRoles(roles, user.getId());
+    // 向用户填写的邮箱发一个用于激活账号的邮件
+    // 拼接用于激活的url
+    String url = domain + "/activation/" + user.getId() + "/" + user.getActivationCode();
+    mailClient.sendMail(user.getEmail(), "激活账号", url);
+    boolean b = i == roles.length && result == 1;
+    if (b) {
+        return 0;
+    } else {
+        return 3;
+    }
+}
 
     public int activation(Long userId, String code) {
         User user = userMapper.selectUserById(userId);

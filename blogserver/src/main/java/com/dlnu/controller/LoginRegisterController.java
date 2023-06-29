@@ -6,7 +6,6 @@ import com.dlnu.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,7 +78,7 @@ public class LoginRegisterController {
         } else if (result == 2) {
             // 邮箱重复，注册失败
             return new RespBean("error", "邮箱重复，注册失败!");
-        }else {
+        } else {
             // 注册失败
             return new RespBean("error", "注册失败!");
         }
